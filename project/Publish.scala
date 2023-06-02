@@ -1,10 +1,33 @@
 import com.typesafe.sbt.pgp.PgpKeys
 import xerial.sbt.Sonatype.autoImport._
-import sbt._, Keys._
+import sbt.{Credentials, ScmInfo, _}
+import Keys._
 import sbtrelease.ReleasePlugin.autoImport._
 import ReleaseTransformations._
 
 object Publish {
+
+  val nemoSettings = Seq(
+
+    credentials ++= {
+      (sys.env.get("ARTIFACTORY_USERNAME"), sys.env.get("ARTIFACTORY_PASSWORD"), sys.env.get("ARTIFACTORY_URL")) match {
+        case (Some(user), Some(pass), Some(url)) =>
+          Seq(Credentials("Artifactory Realm", url, user, pass))
+        case _ =>
+          Seq.empty
+      }
+    },
+    publishMavenStyle := true,
+	  publishTo := {
+		(version.value.contains("SNAPSHOT"), sys.env.get("ARTIFACTORY_URL")) match {
+			case (false, Some(url)) =>
+				Some("Artifactory Realm" at s"https://$url/springernature/nemo-libs-release-local")
+			case (true, Some(url)) =>
+				Some("Artifactory Realm" at s"https://$url/springernature/libs-snapshot")
+			case _ => None
+		}
+	}
+  )
 
   val coreSettings = Seq(
     organization in ThisBuild := "com.iheart",

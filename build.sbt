@@ -24,7 +24,7 @@ lazy val root = project.in(file("."))
 
 lazy val playSwagger = project.in(file("core"))
   .settings(
-    Publish.coreSettings,
+    Publish.nemoSettings,
     Format.settings,
     Testing.settings,
     name := "play-swagger",
@@ -35,13 +35,12 @@ lazy val playSwagger = project.in(file("core"))
       Dependencies.refined ++
       Dependencies.test ++
       Dependencies.yaml,
-    scalaVersion := scalaV,
-    crossScalaVersions := Seq(scalaVersion.value, "2.13.6")
+    scalaVersion := "2.11.12"
   )
 
 lazy val sbtPlaySwagger = project.in(file("sbtPlugin"))
   .settings(
-    Publish.coreSettings,
+    Publish.nemoSettings,
     Format.settings,
     addSbtPlugin("com.typesafe.sbt" %% "sbt-native-packager" % "1.3.17" % Provided),
     addSbtPlugin("com.typesafe.sbt" %% "sbt-web" % "1.4.3" % Provided))
